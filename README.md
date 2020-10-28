@@ -1,9 +1,8 @@
-# gp2
+# Classifying Voice Disorders with Support Vector Machine
 
+## Summary
+- Graduation Project 2 modeled after this research https://ieeexplore.ieee.org/document/8316845
+- The motivation of this project was to learn more about voice analysis by trying to reproduce the result from previous model research.
+- Using Python, PRAAT, and Parselmouth, I was able to extract features from the voice datasets from Saarbruecken Voice Database and run support vector machine on it to identify voice disorders.
 
-1. Looking to use Parselmouth with Praat.
-Currently, there seems to be no easy programmatic way to calculate jitter, shimmer, etc by using Parselmouth. So I will need to write my own or I can use this for now.
-
-https://stackoverflow.com/questions/54707734/parselmouth-batch-full-voice-report/55209266#55209266
-https://stackoverflow.com/questions/45237091/how-to-automate-voice-reports-for-praat/51657044#51657044
 
