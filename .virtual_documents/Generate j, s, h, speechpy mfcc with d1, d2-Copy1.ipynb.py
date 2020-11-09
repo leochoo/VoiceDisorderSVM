@@ -18,133 +18,17 @@ import speechpy
 from scipy.io import wavfile
 
 
-# Process wav files to get Jitter, Shimmer, HNR, and MFCC and its derivatives
-
-def get_voice_data(_path): 
-    
-    # initial vars
-    
-    n = 0
-    d1 = 0
-    d2 = 0
-    mfcc_n = {}
-    mfcc_d1 = {}
-    mfcc_d2 = {}
-
-    # create empty dataframe - [name, type, tone, syllab, jitter, shimmer, hnr, mfcc, mfcc_d1, mfcc_d2]
-
-    df = pd.DataFrame({"Name":pd.Series(n_list),
-                        "Type": np.nan,
-                        "Tone": pd.Series(tone_list),
-                        "Syllab": pd.Series(syllab_list),
-                           "Jitter":pd.Series(j_list),
-                           "Shimmer":pd.Series(s_list),
-                           "HNR":pd.Series(h_list)})
-    df["Type"]= _path.split("/")[-1] # identify type: my_data, healthy, functional etc...
-    new_df = pd.concat([df, mfcc_n_df, mfcc_d1_df, mfcc_d2_df], axis=1, sort=False)
-
-    
-    # select .wav files only
-    wav_files = glob.glob(_path + "/*.wav")
-    
-    
-    # for wav_file in wav_files:
-    for wav_file in tqdm(wav_files): # tqdm shows the progress bar
-        sound = parselmouth.Sound(wav_file) # sound object from wav file
-        pitch = sound.to_pitch()
-        pulses = parselmouth.praat.call([sound, pitch], "To PointProcess (cc)")
-
-        # name analysis
-        name = os.path.basename(wav_file).split(".")[0]  
-        
-        ## tone
-        if "l" in name:
-            tone_list.append("l")
-        elif "n" in name:
-            tone_list.append("n")
-        elif "h" in name:
-            tone_list.append("h")
-
-        ## syllable
-        if "a" in name:
-            syllab_list.append("a")
-        elif "i" in name:
-            syllab_list.append("i")
-        elif "u" in name:
-            syllab_list.append("u")
-        # jitter
-        jitter_local = parselmouth.praat.call(pulses, "Get jitter (local)", 0.0, 0.0, 0.0001, 0.02, 1.3) * 100
-
-        # shimmer
-        shimmer_local = parselmouth.praat.call([sound, pulses], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
-
-        # HNR
-        harmonicity = parselmouth.praat.call(sound, "To Harmonicity (cc)", 0.01, 75, 0.1, 1.0)
-        hnr = parselmouth.praat.call(harmonicity, "Get mean", 0, 0)
-        
-        # Append to numpy array
-        n_list.append(name)
-        j_list.append(jitter_local)
-        s_list.append(shimmer_local)
-        h_list.append(hnr)
-
-        # MFCC - parselmouth (PRAAT)
-#         mfcc_object = sound.to_mfcc(number_of_coefficients=13)
-#         mfcc_arr = mfcc_object.to_array()
-#         mfcc_dic = {}
-#         for i in range(0,len(mfcc_arr)):
-#             mfcc_dic["MFCC-"+str(i)] = [statistics.mean(mfcc_arr[i])]
-#         mfcc_df = pd.DataFrame.from_dict(mfcc_dic)
-        
-        
-        # MFCC, d1, d2
-        samplerate, data = wavfile.read(wav_file)
-        mfcc = speechpy.feature.mfcc(data, samplerate, num_cepstral = 12)
-        mfcc = mfcc.T # transform to handle data easily
-        derivatives = speechpy.feature.extract_derivative_feature(mfcc)
-
-
-        for i in range(0,len(derivatives)):
-            ders = derivatives[i].T # transform to handle data easily
-            n = [statistics.mean(ders[0])]
-            d1 = [statistics.mean(ders[1])]
-            d2 = [statistics.mean(ders[2])]
-            mfcc_n["MFCC-"+str(i)] = n
-            mfcc_d1["MFCC-"+str(i)+"_d1"] = d1
-            mfcc_d2["MFCC-"+str(i)+"_d2"] = d2
-            
-            mfcc_n_df = pd.DataFrame.from_dict(mfcc_n)
-            mfcc_d1_df = pd.DataFrame.from_dict(mfcc_d1)
-            mfcc_d2_df = pd.DataFrame.from_dict(mfcc_d2)
-
-
-    
-    return new_df
-
-
-
 # Process wav files to get Jitter, Shimmer, HNR, and MFCC
 
 def get_voice_data(_path):
     # select .wav files only
     wav_files = glob.glob(_path + "/*.wav")
-
-    n_list = []
-    tone_list = []
-    syllab_list = []
-
-    j_list = []
-    s_list = []
-    h_list = []
+    _type = _path.split("/")[-1] # identify type: my_data, healthy, functional etc...
     
-    n = 0
-    d1 = 0
-    d2 = 0
-    mfcc_n = {}
-    mfcc_d1 = {}
-    mfcc_d2 = {}
-
-    # for wav_file in wav_files:
+    # list to hold voice data before turning it into a dataframe
+    data = []
+    
+    # for each audio file,
     for wav_file in tqdm(wav_files): # tqdm shows the progress bar
         sound = parselmouth.Sound(wav_file) # sound object from wav file
         pitch = sound.to_pitch()
@@ -152,84 +36,71 @@ def get_voice_data(_path):
 
         # name analysis
         name = os.path.basename(wav_file).split(".")[0]  
-        
+
         ## tone
+        tone = ""
         if "l" in name:
-            tone_list.append("l")
+            tone = "l"
         elif "n" in name:
-            tone_list.append("n")
+            tone = "n"
         elif "h" in name:
-            tone_list.append("h")
+            tone = "h"
 
         ## syllable
+        syllab = ""
         if "a" in name:
-            syllab_list.append("a")
+            syllab = "a"
         elif "i" in name:
-            syllab_list.append("i")
+            syllab = "i"
         elif "u" in name:
-            syllab_list.append("u")
+            syllab = "u"
+
         # jitter
-        jitter_local = parselmouth.praat.call(pulses, "Get jitter (local)", 0.0, 0.0, 0.0001, 0.02, 1.3) * 100
+        jitter = parselmouth.praat.call(pulses, "Get jitter (local)", 0.0, 0.0, 0.0001, 0.02, 1.3) * 100
 
         # shimmer
-        shimmer_local = parselmouth.praat.call([sound, pulses], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+        shimmer = parselmouth.praat.call([sound, pulses], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
 
         # HNR
         harmonicity = parselmouth.praat.call(sound, "To Harmonicity (cc)", 0.01, 75, 0.1, 1.0)
         hnr = parselmouth.praat.call(harmonicity, "Get mean", 0, 0)
-        
-        # Append to numpy array
-        n_list.append(name)
-        j_list.append(jitter_local)
-        s_list.append(shimmer_local)
-        h_list.append(hnr)
 
-        # MFCC - parselmouth (PRAAT)
-#         mfcc_object = sound.to_mfcc(number_of_coefficients=13)
-#         mfcc_arr = mfcc_object.to_array()
-#         mfcc_dic = {}
-#         for i in range(0,len(mfcc_arr)):
-#             mfcc_dic["MFCC-"+str(i)] = [statistics.mean(mfcc_arr[i])]
-#         mfcc_df = pd.DataFrame.from_dict(mfcc_dic)
-        
-        
+        # append a bit before adding mfcc
+        data_row = [name, _type, tone, syllab, jitter, shimmer, hnr]
+
         # MFCC, d1, d2
-        samplerate, data = wavfile.read(wav_file)
-        mfcc = speechpy.feature.mfcc(data, samplerate, num_cepstral = 12)
-        mfcc = mfcc.T # transform to handle data easily
-        derivatives = speechpy.feature.extract_derivative_feature(mfcc)
+        samplerate, wav_data = wavfile.read(wav_file)
+        mfccs = speechpy.feature.mfcc(wav_data, samplerate, num_cepstral = 12)
+        mfccs = mfccs.T # transform to handle wav_data easily 
+        derivatives = speechpy.feature.extract_derivative_feature(mfccs) # this now looks like: [c#][frame#][[mfcc, d1, d2]]
+
+        mfcc_list = []
+        mfcc_d1 = []
+        mfcc_d2 = []
+
+        # for each coefficient,
+        for i in range(0, len(derivatives)):
+            mfcc_vars = derivatives[i].T # mfcc, d1, d2
+
+            # take the average across the entire time frame
+            mfcc = statistics.mean(mfcc_vars[0])
+            d1 = statistics.mean(mfcc_vars[1])
+            d2 = statistics.mean(mfcc_vars[2])
+
+            # append to the list
+            mfcc_list.append(mfcc)
+            mfcc_d1.append(d1)
+            mfcc_d2.append(d2)
+
+        data_row = data_row + mfcc_list + mfcc_d1 + mfcc_d2
+
+        # append to data
+        data.append(data_row)
+        
+    return data
 
 
-        for i in range(0,len(derivatives)):
-            ders = derivatives[i].T # transform to handle data easily
-            n = [statistics.mean(ders[0])]
-            d1 = [statistics.mean(ders[1])]
-            d2 = [statistics.mean(ders[2])]
-            mfcc_n["MFCC-"+str(i)] = n
-            mfcc_d1["MFCC-"+str(i)+"_d1"] = d1
-            mfcc_d2["MFCC-"+str(i)+"_d2"] = d2
-            
-            mfcc_n_df = pd.DataFrame.from_dict(mfcc_n)
-            mfcc_d1_df = pd.DataFrame.from_dict(mfcc_d1)
-            mfcc_d2_df = pd.DataFrame.from_dict(mfcc_d2)
-
-
-    # create dataframe
-    df = pd.DataFrame({"Name":pd.Series(n_list),
-                        "Type": np.nan,
-                        "Tone": pd.Series(tone_list),
-                        "Syllab": pd.Series(syllab_list),
-                           "Jitter":pd.Series(j_list),
-                           "Shimmer":pd.Series(s_list),
-                           "HNR":pd.Series(h_list)})
-    df["Type"]= _path.split("/")[-1] # identify type: my_data, healthy, functional etc...
-    new_df = pd.concat([df, mfcc_n_df, mfcc_d1_df, mfcc_d2_df], axis=1, sort=False)
-
-    return new_df
-
-
-
-def generate_jshmfcc(dataset_type, dataset_path):
+def analyze_svd(dataset_path):
     healthy_df = get_voice_data(dataset_path + "/healthy")
     functional_df = get_voice_data(dataset_path + "/pathological/functional")
     hyperfunctional_df = get_voice_data(dataset_path + "/pathological/hyperfunctional")
@@ -239,7 +110,6 @@ def generate_jshmfcc(dataset_type, dataset_path):
     # Combine the results into one dataframe
     frames = [healthy_df, functional_df, hyperfunctional_df, organic_df, psychogenic_df]
     combined_df = pd.concat(frames)
-    combined_df = combined_df.dropna()
     return combined_df
 
 
@@ -250,20 +120,20 @@ train_path = "/Users/leochoo/dev/VoiceDisorderSVM/data/SVD/train_audio"
 
 
 # generate voice report for test dataset
-test_report = generate_jshmfcc("test", test_path)
-test_report
+test_report = analyze_svd(test_path)
+test_report.shape
 
 
-# # generate voice report for train dataset
-# train_report = generate_jshmfcc("train", train_path)
-# train_report
+# generate voice report for train dataset
+train_report = analyze_svd(train_path)
+train_report.shape
 
 
 # Save the outputs to the processed data directory
 test_report.to_csv ("./data/processed/test_SVD_j_s_hnr_mfcc_with_d1d2.csv", index = False, header=True)
 print("Test data exported")
-# train_report.to_csv ("./data/processed/train_SVD_j_s_hnr_mfcc_withd1d2.csv", index = False, header=True)
-# print("Train data exported")
+train_report.to_csv ("./data/processed/train_SVD_j_s_hnr_mfcc_withd1d2.csv", index = False, header=True)
+print("Train data exported")
 
 
 
@@ -275,7 +145,7 @@ print("Test data exported")
 # 1105 09:02 now generating new dataset with the correct average mfcc value. no d1 d2 included here.
 
 
-
+# 1109 08:55 refactoring done and testing
 
 
 
