@@ -1,0 +1,13 @@
+100+ files -> PRAAT -> 書き出し
+(PRAAT script?)
+
+output file  -> MATLAB 読み込み -> mPraatでグラフ・平均値
+
+
+PRAAT
+１。２つファイルの読み込み
+２。voice report出力
+
+MATLAB
+３。voice reportの中からjitter取り出す
+４。グラフ、保存など
