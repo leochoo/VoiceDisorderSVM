@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scheme description="" title="" version="2.0">
+	<nodes>
+		<node id="0" name="CSV File Import" position="(50.0, 86.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owcsvimport.OWCSVFileImport" title="CSV File Import" version="" />
+		<node id="1" name="Data Sampler" position="(217.0, 86.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owdatasampler.OWDataSampler" title="Data Sampler" version="" />
+		<node id="2" name="SVM" position="(458.0, 225.0)" project_name="Orange3" qualified_name="Orange.widgets.model.owsvm.OWSVM" title="SVM" version="" />
+		<node id="3" name="Predictions" position="(633.0, 89.0)" project_name="Orange3" qualified_name="Orange.widgets.evaluate.owpredictions.OWPredictions" title="Predictions" version="" />
+		<node id="4" name="Select Columns" position="(125.0, 142.0)" project_name="Orange3" qualified_name="Orange.widgets.data.owselectcolumns.OWSelectAttributes" title="Select Columns" version="" />
+	</nodes>
+	<links>
+		<link enabled="true" id="0" sink_channel="Data" sink_node_id="2" source_channel="Data Sample" source_node_id="1" />
+		<link enabled="true" id="1" sink_channel="Data" sink_node_id="3" source_channel="Remaining Data" source_node_id="1" />
+		<link enabled="true" id="2" sink_channel="Data" sink_node_id="4" source_channel="Data" source_node_id="0" />
+		<link enabled="true" id="3" sink_channel="Data" sink_node_id="1" source_channel="Data" source_node_id="4" />
+		<link enabled="true" id="4" sink_channel="Predictors" sink_node_id="3" source_channel="Model" source_node_id="2" />
+	</links>
+	<annotations />
+	<thumbnail />
+	<node_properties>
+		<properties format="literal" node_id="0">{'_session_items': [], '_session_items_v2': [({'type': 'AbsPath', 'path': '/Users/leochoo/dev/VoiceDisorderSVM/data/processed/allSVD.csv'}, {'encoding': 'utf-8', 'delimiter': ',', 'quotechar': '"', 'doublequote': True, 'skipinitialspace': True, 'quoting': 0, 'columntypes': [{'start': 0, 'stop': 1, 'value': 'Text'}, {'start': 1, 'stop': 4, 'value': 'Categorical'}, {'start': 4, 'stop': 43, 'value': 'Auto'}], 'rowspec': [{'start': 0, 'stop': 1, 'value': 'Header'}], 'decimal_separator': '.', 'group_separator': ''})], 'compatibility_mode': False, 'controlAreaVisible': True, 'dialog_state': {'directory': '/Users/leochoo/dev/VoiceDisorderSVM/data/processed', 'filter': 'Text - comma separated (*.csv, *)'}, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x03\x00\x00\x00\x00\x02\x9b\x00\x00\x01E\x00\x00\x03\xe0\x00\x00\x02\xb0\x00\x00\x02\x9b\x00\x00\x01[\x00\x00\x03\xe7\x00\x00\x02\xb0\x00\x00\x00\x00\x02\x00\x00\x00\x06\x90\x00\x00\x02\x9b\x00\x00\x01[\x00\x00\x03\xe0\x00\x00\x02\xb0', '__version__': 3}</properties>
+		<properties format="literal" node_id="1">{'compatibility_mode': False, 'controlAreaVisible': True, 'number_of_folds': 10, 'replacement': True, 'sampleSizeNumber': 1, 'sampleSizePercentage': 80, 'sampleSizeSqlPercentage': 0.1, 'sampleSizeSqlTime': 1, 'sampling_type': 0, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x03\x00\x00\x00\x00\x031\x00\x00\x01\x1e\x00\x00\x04:\x00\x00\x02\xf6\x00\x00\x031\x00\x00\x014\x00\x00\x04:\x00\x00\x02\xf6\x00\x00\x00\x00\x02\x00\x00\x00\x06\x90\x00\x00\x031\x00\x00\x014\x00\x00\x04:\x00\x00\x02\xf6', 'selectedFold': 1, 'sql_dl': False, 'stratify': False, 'use_seed': False, '__version__': 2}</properties>
+		<properties format="literal" node_id="2">{'C': 1.0, 'auto_apply': True, 'coef0': 0.0, 'controlAreaVisible': True, 'degree': 2.0, 'epsilon': 0.1, 'gamma': 0.0, 'kernel_type': 0, 'learner_name': '', 'limit_iter': False, 'max_iter': 500, 'nu': 0.5, 'nu_C': 1.0, 'savedWidgetGeometry': b'\x01\xd9\xd0\xcb\x00\x03\x00\x00\x00\x00\x03\t\x00\x00\x01\x82\x00\x00\x04W\x00\x00\x03\x91\x00\x00\x02P\x00\x00\x01$\x00\x00\x03\x9e\x00\x00\x03\x1d\x00\x00\x00\x00\x02\x00\x00\x00\x06\x90\x00\x00\x03\t\x00\x00\x01\x98\x00\x00\x04W\x00\x00\x03\x91', 'svm_type': 0, 'tol': 0.001, '__version__': 1}</properties>
+		<properties format="pickle" node_id="3">gASVCgEAAAAAAAB9lCiMEmNvbnRyb2xBcmVhVmlzaWJsZZSIjBNzYXZlZFdpZGdldEdlb21ldHJ5
+lENCAdnQywADAAAAAAJEAAAAdwAABn8AAALnAAACRAAAAI0AAAZ/AAAC5wAAAAAAAAAABpAAAAJE
+AAAAjQAABn8AAALnlIwJc2VsZWN0aW9ulF2UjAtzY29yZV90YWJsZZR9lIwMc2hvd25fc2NvcmVz
+lI+UKIwDTUFFlIwCUjKUjANBVUOUjANNU0WUjAJGMZSMAkNBlIwEUk1TRZSMCVByZWNpc2lvbpSM
+BlJlY2FsbJSQc4wLX192ZXJzaW9uX1+USwGMEGNvbnRleHRfc2V0dGluZ3OUXZR1Lg==
+</properties>
+		<properties format="pickle" node_id="4">gASVewUAAAAAAAB9lCiMC2F1dG9fY29tbWl0lIiMEmNvbnRyb2xBcmVhVmlzaWJsZZSIjBNzYXZl
+ZFdpZGdldEdlb21ldHJ5lENCAdnQywADAAAAAABZAAAATgAAAr0AAAMIAAAAWQAAAGQAAAK9AAAD
+CAAAAAAAAAAABpAAAABZAAAAZAAAAr0AAAMIlIwSdXNlX2lucHV0X2ZlYXR1cmVzlImMC19fdmVy
+c2lvbl9flEsBjBBjb250ZXh0X3NldHRpbmdzlF2UjBVvcmFuZ2V3aWRnZXQuc2V0dGluZ3OUjAdD
+b250ZXh0lJOUKYGUfZQojAZ2YWx1ZXOUfZQojBFkb21haW5fcm9sZV9oaW50c5R9lCiMBlN5bGxh
+YpRLAYaUjAlhdmFpbGFibGWUSwCGlIwEVG9uZZRLAYaUaBRLAYaUjAZKaXR0ZXKUSwKGlIwJYXR0
+cmlidXRllEsAhpSMB1NoaW1tZXKUSwKGlGgbSwGGlIwDSE5SlEsChpRoG0sChpSMBk1GQ0MtNJRL
+AoaUaBtLA4aUjAZNRkNDLTKUSwKGlGgbSwSGlIwGTUZDQy0wlEsChpRoG0sFhpSMBk1GQ0MtMZRL
+AoaUaBtLBoaUjAZNRkNDLTOUSwKGlGgbSweGlIwGTUZDQy01lEsChpRoG0sIhpSMBk1GQ0MtNpRL
+AoaUaBtLCYaUjAZNRkNDLTeUSwKGlGgbSwqGlIwGTUZDQy04lEsChpRoG0sLhpSMBk1GQ0MtOZRL
+AoaUaBtLDIaUjAdNRkNDLTEwlEsChpRoG0sNhpSMB01GQ0MtMTGUSwKGlGgbSw6GlIwJTUZDQy0y
+X2QxlEsChpRoG0sPhpSMCU1GQ0MtNF9kMZRLAoaUaBtLEIaUjAlNRkNDLTJfZDKUSwKGlGgbSxGG
+lIwJTUZDQy00X2QylEsChpRoG0sShpSMCk1GQ0MtMTBfZDKUSwKGlGgbSxOGlIwJTUZDQy0wX2Qx
+lEsChpRoG0sUhpSMCU1GQ0MtMV9kMZRLAoaUaBtLFYaUjAlNRkNDLTNfZDGUSwKGlGgbSxaGlIwJ
+TUZDQy01X2QxlEsChpRoG0sXhpSMCU1GQ0MtNl9kMZRLAoaUaBtLGIaUjAlNRkNDLTdfZDGUSwKG
+lGgbSxmGlIwJTUZDQy04X2QxlEsChpRoG0sahpSMCU1GQ0MtOV9kMZRLAoaUaBtLG4aUjApNRkND
+LTEwX2QxlEsChpRoG0schpSMCk1GQ0MtMTFfZDGUSwKGlGgbSx2GlIwKTUZDQy0xMV9kMpRLAoaU
+aBtLHoaUjAlNRkNDLTBfZDKUSwKGlGgbSx+GlIwJTUZDQy0xX2QylEsChpRoG0sghpSMCU1GQ0Mt
+M19kMpRLAoaUaBtLIYaUjAlNRkNDLTVfZDKUSwKGlGgbSyKGlIwJTUZDQy02X2QylEsChpRoG0sj
+hpSMCU1GQ0MtN19kMpRLAoaUaBtLJIaUjAlNRkNDLThfZDKUSwKGlGgbSyWGlIwJTUZDQy05X2Qy
+lEsChpRoG0smhpSMBFR5cGWUSwGGlIwFY2xhc3OUSwCGlIwETmFtZZRLA4aUjARtZXRhlEsAhpR1
+Sv7///+GlGgGSwF1jAphdHRyaWJ1dGVzlH2UKGiPSwFoFksBaBJLAWgZSwJoHUsCaCBLAmgpSwJo
+LEsCaCZLAmgvSwJoI0sCaDJLAmg1SwJoOEsCaDtLAmg+SwJoQUsCaERLAmhWSwJoWUsCaEdLAmhc
+SwJoSksCaF9LAmhiSwJoZUsCaGhLAmhrSwJobksCaHFLAmh3SwJoeksCaE1LAmh9SwJoUEsCaIBL
+AmiDSwJohksCaIlLAmiMSwJoU0sCaHRLAnWMBW1ldGFzlH2UaJNLA3N1YmF1Lg==
+</properties>
+	</node_properties>
+	<session_state>
+		<window_groups />
+	</session_state>
+</scheme>
